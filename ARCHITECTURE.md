@@ -207,6 +207,17 @@ Phase 2 implemented typed manifest and compatibility foundations:
 - `rbac` requires `auth`; manifest I/O failures map to exit code 1, configuration/compatibility failures map to exit code 2.
 - Discovery searches for `.rustrs/config.toml` without writing or canonicalizing paths.
 
+### 4.8 Phase 3 implementation notes
+
+Phase 3 implemented the template and filesystem engine:
+
+- `src/template` defines template metadata, fixture assets, resolver, context, asset selection, and Tera rendering with autoescape disabled for code/config output.
+- `src/generation` defines the generation plan and planning pipeline without filesystem writes.
+- `src/filesystem` validates paths, detects conflicts, applies plans with atomic writes, and produces dry-run previews and operation reports.
+- Only `TemplateId::Minimal` has a fixture template; other templates remain unavailable.
+- Path traversal, absolute paths, and symlink escapes are rejected.
+- Existing files are preserved by default.
+
 ---
 
 ## 5. Proposed source layout
@@ -246,6 +257,23 @@ rustrs/
 │   │   ├── matrix.rs
 │   │   ├── resolver.rs
 │   │   └── capabilities.rs
+│   ├── template/
+│   │   ├── mod.rs
+│   │   ├── metadata.rs
+│   │   ├── resolver.rs
+│   │   ├── context.rs
+│   │   ├── asset.rs
+│   │   └── renderer.rs
+│   ├── generation/
+│   │   ├── mod.rs
+│   │   ├── plan.rs
+│   │   └── planner.rs
+│   ├── filesystem/
+│   │   ├── mod.rs
+│   │   ├── paths.rs
+│   │   ├── conflicts.rs
+│   │   ├── writer.rs
+│   │   └── report.rs
 │   ├── config/
 │   │   ├── mod.rs
 │   │   ├── manifest.rs
