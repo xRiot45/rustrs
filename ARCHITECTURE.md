@@ -196,6 +196,17 @@ Phase 1 implemented the initial CLI foundation:
 - Candidate project-root discovery lives in `src/project/root.rs` and detects an ancestor containing `Cargo.toml`; it does not validate a `rustrs` manifest.
 - Output policy is centralized in `src/cli/output.rs`.
 
+### 4.7 Phase 2 implementation notes
+
+Phase 2 implemented typed manifest and compatibility foundations:
+
+- `src/manifest` defines `ProjectManifest`, typed technology enums, `Features`, parsing, validation, schema version 1, and read-only manifest discovery.
+- `src/compatibility` owns the compatibility matrix, resolver, status reporting, and capability dependency validation.
+- Unknown manifest fields are rejected with `deny_unknown_fields`.
+- Only `Axum + Postgres + SQLx` is currently supported; other recognized combinations are unsupported without silent fallback.
+- `rbac` requires `auth`; manifest I/O failures map to exit code 1, configuration/compatibility failures map to exit code 2.
+- Discovery searches for `.rustrs/config.toml` without writing or canonicalizing paths.
+
 ---
 
 ## 5. Proposed source layout
@@ -222,6 +233,19 @@ rustrs/
 │   │   ├── compatibility.rs
 │   │   ├── naming.rs
 │   │   └── generation.rs
+│   ├── manifest/
+│   │   ├── mod.rs
+│   │   ├── model.rs
+│   │   ├── parser.rs
+│   │   ├── validation.rs
+│   │   ├── discovery.rs
+│   │   └── error.rs
+│   ├── compatibility/
+│   │   ├── mod.rs
+│   │   ├── types.rs
+│   │   ├── matrix.rs
+│   │   ├── resolver.rs
+│   │   └── capabilities.rs
 │   ├── config/
 │   │   ├── mod.rs
 │   │   ├── manifest.rs
