@@ -186,6 +186,16 @@ Keep user-facing output separate from core decisions. Human-readable output is t
 
 Interactive prompts should be an input adapter to the same application request used by non-interactive flags. This allows automation and CI usage without a terminal.
 
+### 4.6 Phase 1 implementation notes
+
+Phase 1 implemented the initial CLI foundation:
+
+- `clap` derive API in `src/cli/mod.rs` with root help/version and global options `--verbose`, `--quiet`, and `--no-color`.
+- `--verbose` and `--quiet` conflict; `--no-color` disables application styling.
+- Execution errors are represented by `src/error.rs` and mapped to exit codes; parse errors remain Clap's responsibility.
+- Candidate project-root discovery lives in `src/project/root.rs` and detects an ancestor containing `Cargo.toml`; it does not validate a `rustrs` manifest.
+- Output policy is centralized in `src/cli/output.rs`.
+
 ---
 
 ## 5. Proposed source layout
