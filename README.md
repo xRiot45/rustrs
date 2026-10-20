@@ -4,8 +4,13 @@ Rust API scaffolding CLI.
 
 ## Status
 
-This project is under development. Project generation and code generators are
-not available yet; only the minimal executable entry point exists.
+Phase 1 (CLI Foundation) is complete. The CLI currently provides:
+
+- `--help`
+- `--version`
+- Global options: `--verbose` / `-v`, `--quiet` / `-q`, `--no-color`
+
+Project scaffolding, templates, and code generators are not available yet.
 
 ## Prerequisites
 
@@ -14,9 +19,16 @@ not available yet; only the minimal executable entry point exists.
 ## Setup
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/xRiot45/rustrs.git
 cd rustrs
 cargo check
+```
+
+## Usage
+
+```bash
+rustrs --help
+rustrs --version
 ```
 
 ## Verify
