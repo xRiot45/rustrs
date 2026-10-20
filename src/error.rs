@@ -1,3 +1,5 @@
+use crate::compatibility::CompatibilityError;
+use crate::manifest::ManifestError;
 use crate::project::root::ProjectRootError;
 use thiserror::Error;
 
@@ -9,6 +11,12 @@ pub enum CliError {
 
     #[error(transparent)]
     ProjectRoot(#[from] ProjectRootError),
+
+    #[error(transparent)]
+    Manifest(#[from] ManifestError),
+
+    #[error(transparent)]
+    Compatibility(#[from] CompatibilityError),
 }
 
 impl CliError {
@@ -16,6 +24,11 @@ impl CliError {
         match self {
             Self::InvalidInput(_) => 2,
             Self::ProjectRoot(_) => 2,
+            Self::Manifest(error) => match error {
+                ManifestError::Io { .. } => 1,
+                _ => 2,
+            },
+            Self::Compatibility(_) => 2,
         }
     }
 }

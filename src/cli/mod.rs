@@ -16,7 +16,3 @@ pub struct Cli {
     #[arg(long, global = true)]
     pub no_color: bool,
 }
-
-impl Cli {
-    // Convenience accessor used by main and tests.
-}

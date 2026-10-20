@@ -4,11 +4,13 @@ Rust API scaffolding CLI.
 
 ## Status
 
-Phase 1 (CLI Foundation) is complete. The CLI currently provides:
+Phase 2 (Manifest and Compatibility) is complete. The CLI currently provides:
 
 - `--help`
 - `--version`
 - Global options: `--verbose` / `-v`, `--quiet` / `-q`, `--no-color`
+
+Internally, typed manifest parsing, validation, schema versioning, compatibility resolution, capability rules, and read-only manifest discovery are available.
 
 Project scaffolding, templates, and code generators are not available yet.
 
