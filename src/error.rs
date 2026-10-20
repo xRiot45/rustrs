@@ -1,4 +1,5 @@
 use crate::compatibility::CompatibilityError;
+use crate::domain::naming::NamingError;
 use crate::manifest::ManifestError;
 use crate::project::root::ProjectRootError;
 use crate::template::TemplateError;
@@ -22,6 +23,9 @@ pub enum CliError {
     #[error(transparent)]
     Template(#[from] TemplateError),
 
+    #[error(transparent)]
+    Naming(#[from] NamingError),
+
     #[error("conflict: {0}")]
     Conflict(String),
 }
@@ -37,6 +41,7 @@ impl CliError {
             },
             Self::Compatibility(_) => 2,
             Self::Template(_) => 2,
+            Self::Naming(_) => 2,
             Self::Conflict(_) => 3,
         }
     }

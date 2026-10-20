@@ -44,6 +44,7 @@ pub fn build_plan(
             relative_path,
             contents,
             description: format!("generate {}", asset.relative_path),
+            overwrite: false,
         });
     }
 
@@ -60,6 +61,7 @@ pub fn build_plan(
         relative_path: manifest_relative,
         contents: manifest_contents.into_bytes(),
         description: "generate .rustrs/config.toml".to_string(),
+        overwrite: false,
     });
 
     Ok(GenerationPlan {

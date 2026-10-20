@@ -1,5 +1,6 @@
 use clap::Parser;
 use rustrs::application;
+use rustrs::application::generate;
 use rustrs::cli::{Cli, Commands, Output};
 use rustrs::error::CliError;
 use std::process;
@@ -17,6 +18,7 @@ fn main() {
 fn run(cli: &Cli, output: &Output) -> Result<(), CliError> {
     match &cli.command {
         Some(Commands::New(args)) => application::new_project::execute(args, output),
+        Some(Commands::Generate(args)) => generate::execute(args, output),
         None => Ok(()),
     }
 }

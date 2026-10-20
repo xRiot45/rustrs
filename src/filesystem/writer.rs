@@ -28,7 +28,7 @@ pub fn apply_plan(plan: &GenerationPlan, policy: WritePolicy) -> OperationReport
             ConflictStatus::ExistsFile
             | ConflictStatus::ExistsDirectory
             | ConflictStatus::Invalid => {
-                if policy != WritePolicy::Overwrite {
+                if policy != WritePolicy::Overwrite && !operation.overwrite {
                     results.push(OperationResult {
                         relative_path,
                         outcome: OperationOutcome::Skipped {
