@@ -14,7 +14,7 @@ pub fn build_plan(
     template: crate::manifest::model::TemplateId,
     target_root: &Path,
 ) -> Result<GenerationPlan, TemplateError> {
-    if !target_root.is_dir() {
+    if target_root.exists() && !target_root.is_dir() {
         return Err(TemplateError::InvalidPath {
             path: target_root.display().to_string(),
         });
@@ -46,6 +46,21 @@ pub fn build_plan(
             description: format!("generate {}", asset.relative_path),
         });
     }
+
+    let manifest_contents =
+        toml::to_string_pretty(manifest).map_err(|error| TemplateError::Manifest {
+            message: error.to_string(),
+        })?;
+    let manifest_path = Path::new(".rustrs").join("config.toml");
+    let manifest_relative =
+        paths::validate_relative_path(&manifest_path).map_err(|_| TemplateError::InvalidPath {
+            path: manifest_path.display().to_string(),
+        })?;
+    operations.push(PlannedOperation {
+        relative_path: manifest_relative,
+        contents: manifest_contents.into_bytes(),
+        description: "generate .rustrs/config.toml".to_string(),
+    });
 
     Ok(GenerationPlan {
         target_root: target_root.to_path_buf(),

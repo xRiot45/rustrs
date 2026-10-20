@@ -214,9 +214,20 @@ Phase 3 implemented the template and filesystem engine:
 - `src/template` defines template metadata, fixture assets, resolver, context, asset selection, and Tera rendering with autoescape disabled for code/config output.
 - `src/generation` defines the generation plan and planning pipeline without filesystem writes.
 - `src/filesystem` validates paths, detects conflicts, applies plans with atomic writes, and produces dry-run previews and operation reports.
-- Only `TemplateId::Minimal` has a fixture template; other templates remain unavailable.
+- Only `TemplateId::Minimal` had a fixture template; other templates remained unavailable until Phase 4.
 - Path traversal, absolute paths, and symlink escapes are rejected.
 - Existing files are preserved by default.
+
+### 4.9 Phase 4 implementation notes
+
+Phase 4 implemented project scaffolding:
+- `src/cli` defines the `new` subcommand with typed flags and global options.
+- `src/application/new_project.rs` orchestrates input resolution, wizard, compatibility preflight, planning, dry-run, apply, manifest read-back, and reporting.
+- `src/template/metadata.rs` now provides buildable starter templates for Minimal, Simple, Standard, and Enterprise (all currently Axum + Postgres + SQLx).
+- `build_plan` now appends `.rustrs/config.toml` serialized from the final manifest (single source of truth).
+- Dry-run uses the same plan as apply and does not mutate the filesystem.
+- Existing targets are preserved unless explicitly empty; conflicts return exit code 3.
+- Git initialization is not exposed in Phase 4.
 
 ---
 
