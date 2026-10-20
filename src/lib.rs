@@ -6,6 +6,7 @@ pub mod error;
 pub mod filesystem;
 pub mod generation;
 pub mod generator;
+pub mod inspection;
 pub mod manifest;
 pub mod project;
 pub mod template;

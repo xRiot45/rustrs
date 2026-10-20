@@ -52,3 +52,15 @@ cargo clippy --all-targets --all-features -- -D warnings
 
 See `docs/roadmap/` for phase documents. Planned commands (not yet available)
 include `rustrs new`, `rustrs generate`, and related tooling.
+
+## Inspection and diagnostics
+
+```bash
+rustrs info
+rustrs modules
+rustrs routes
+rustrs deps
+rustrs doctor
+```
+
+All inspection commands are read-only. `--path` and `--json` are supported where applicable.

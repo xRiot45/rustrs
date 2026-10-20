@@ -1,7 +1,9 @@
 pub mod commands;
 pub mod output;
 
-pub use commands::{GenerateArgs, NewArgs};
+pub use commands::{
+    DepsArgs, DoctorArgs, GenerateArgs, InfoArgs, ModulesArgs, NewArgs, RoutesArgs,
+};
 pub use output::Output;
 
 use clap::{Parser, Subcommand};
@@ -30,4 +32,19 @@ pub enum Commands {
     /// Generate code in an existing rustrs project
     #[command(alias = "g")]
     Generate(GenerateArgs),
+
+    /// Inspect project configuration
+    Info(InfoArgs),
+
+    /// Inspect project modules
+    Modules(ModulesArgs),
+
+    /// Inspect project routes
+    Routes(RoutesArgs),
+
+    /// Inspect project dependencies
+    Deps(DepsArgs),
+
+    /// Run project diagnostics
+    Doctor(DoctorArgs),
 }
