@@ -1,3 +1,4 @@
+use crate::application::assets;
 use crate::cli::GenerateArgs;
 use crate::cli::Output;
 use crate::compatibility::check_compatibility;
@@ -7,6 +8,7 @@ use crate::filesystem::apply_plan;
 use crate::filesystem::report::preview_plan;
 use crate::generation::plan::{OperationOutcome, WritePolicy};
 use crate::generator::context::GeneratorContext;
+use crate::generator::kind::GeneratorKind;
 use crate::generator::registry::plan_for;
 use crate::manifest::discovery::discover_manifest;
 use std::env;
@@ -20,8 +22,37 @@ pub fn execute(args: &GenerateArgs, output: &Output) -> Result<(), CliError> {
     discovered.manifest.validate()?;
     check_compatibility(&discovered.manifest)?;
 
+    let name = match &args.name {
+        Some(name) => name.clone(),
+        None => {
+            if matches!(
+                args.generator,
+                GeneratorKind::Docker
+                    | GeneratorKind::Compose
+                    | GeneratorKind::CiGithub
+                    | GeneratorKind::CiGitlab
+                    | GeneratorKind::Release
+            ) {
+                String::new()
+            } else {
+                return Err(CliError::InvalidInput("missing generator name".to_string()));
+            }
+        }
+    };
+
+    if matches!(
+        args.generator,
+        GeneratorKind::Docker
+            | GeneratorKind::Compose
+            | GeneratorKind::CiGithub
+            | GeneratorKind::CiGitlab
+            | GeneratorKind::Release
+    ) {
+        return assets::execute(args.generator, args, output);
+    }
+
     let input = NameInput {
-        name: args.name.clone(),
+        name,
         singular: args.singular.clone(),
         plural: args.plural.clone(),
     };
@@ -38,7 +69,9 @@ pub fn execute(args: &GenerateArgs, output: &Output) -> Result<(), CliError> {
     if !output.quiet {
         output.info(&format!("Project: {}", ctx.project_root.display()));
         output.info(&format!("Generator: {}", args.generator));
-        output.info(&format!("Name: {}", args.name));
+        if let Some(name) = &args.name {
+            output.info(&format!("Name: {}", name));
+        }
     }
 
     let plan = plan_for(args.generator, &ctx)?;

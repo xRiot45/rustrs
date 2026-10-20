@@ -229,6 +229,16 @@ Phase 4 implemented project scaffolding:
 - Existing targets are preserved unless explicitly empty; conflicts return exit code 3.
 - Git initialization is not exposed in Phase 4.
 
+### 4.10 Phase 8 implementation notes
+
+Phase 8 added quality commands, documentation helper, shell completion, and generated delivery assets:
+- `src/application/quality.rs` runs Cargo commands from the resolved project root.
+- `src/application/docs.rs` validates OpenAPI capability without fabricating endpoints.
+- `src/application/completion.rs` emits shell completion from the actual Clap command tree.
+- `src/application/assets.rs` generates Docker, Compose, CI, and release workflow files with the existing safe-write policy.
+- `rustrs format` is check-only by default; `--write` is required to mutate files.
+- `rustrs audit` requires an external `cargo-audit` installation.
+
 ---
 
 ## 5. Proposed source layout
