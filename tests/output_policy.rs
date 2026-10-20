@@ -6,6 +6,7 @@ fn output_captures_flags() {
         verbose: true,
         quiet: false,
         no_color: true,
+        command: None,
     };
     let output = Output::from_cli(&cli);
     assert!(output.verbose);
