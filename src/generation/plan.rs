@@ -11,6 +11,7 @@ pub struct PlannedOperation {
     pub relative_path: PathBuf,
     pub contents: Vec<u8>,
     pub description: String,
+    pub overwrite: bool,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]

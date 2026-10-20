@@ -1,7 +1,7 @@
 pub mod commands;
 pub mod output;
 
-pub use commands::NewArgs;
+pub use commands::{GenerateArgs, NewArgs};
 pub use output::Output;
 
 use clap::{Parser, Subcommand};
@@ -26,4 +26,8 @@ pub struct Cli {
 pub enum Commands {
     /// Create a new Rust REST API project
     New(NewArgs),
+
+    /// Generate code in an existing rustrs project
+    #[command(alias = "g")]
+    Generate(GenerateArgs),
 }

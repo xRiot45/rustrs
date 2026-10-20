@@ -1,9 +1,11 @@
 pub mod application;
 pub mod cli;
 pub mod compatibility;
+pub mod domain;
 pub mod error;
 pub mod filesystem;
 pub mod generation;
+pub mod generator;
 pub mod manifest;
 pub mod project;
 pub mod template;

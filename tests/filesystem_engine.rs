@@ -46,6 +46,7 @@ fn writer_creates_planned_files() {
             relative_path: std::path::PathBuf::from("out.txt"),
             contents: b"hello".to_vec(),
             description: "create".to_string(),
+            overwrite: false,
         }],
     };
 
@@ -71,6 +72,7 @@ fn writer_preserves_existing_files_by_default() {
             relative_path: std::path::PathBuf::from("out.txt"),
             contents: b"new".to_vec(),
             description: "create".to_string(),
+            overwrite: false,
         }],
     };
 
@@ -94,6 +96,7 @@ fn writer_creates_parent_directories() {
             relative_path: std::path::PathBuf::from("nested/deep/out.txt"),
             contents: b"hello".to_vec(),
             description: "create".to_string(),
+            overwrite: false,
         }],
     };
 
@@ -114,6 +117,7 @@ fn preview_does_not_mutate_filesystem() {
             relative_path: std::path::PathBuf::from("out.txt"),
             contents: b"hello".to_vec(),
             description: "create".to_string(),
+            overwrite: false,
         }],
     };
 
@@ -139,6 +143,7 @@ fn preview_marks_existing_target_as_skipped() {
             relative_path: std::path::PathBuf::from("out.txt"),
             contents: b"hello".to_vec(),
             description: "create".to_string(),
+            overwrite: false,
         }],
     };
 
@@ -158,6 +163,7 @@ fn writer_reports_invalid_path_without_writing() {
             relative_path: std::path::PathBuf::from("../escape.txt"),
             contents: b"hello".to_vec(),
             description: "create".to_string(),
+            overwrite: false,
         }],
     };
 
@@ -184,6 +190,7 @@ fn writer_rejects_symlink_escape() {
             relative_path: std::path::PathBuf::from("link/escape.txt"),
             contents: b"hello".to_vec(),
             description: "create".to_string(),
+            overwrite: false,
         }],
     };
 

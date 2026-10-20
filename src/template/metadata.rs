@@ -333,7 +333,9 @@ sqlx = { version = "0.8", features = ["runtime-tokio-rustls", "postgres"] }
 
 const MINIMAL_CARGO_TOML: &str = SHARED_CARGO_TOML;
 
-const MINIMAL_MAIN_RS: &str = r#"mod routes;
+const MINIMAL_MAIN_RS: &str = r#"// rustrs:begin:modules
+mod routes;
+// rustrs:end:modules
 
 #[tokio::main]
 async fn main() {
@@ -348,13 +350,18 @@ async fn main() {
 const MINIMAL_ROUTES_RS: &str = r#"use axum::{Router, routing::get};
 
 pub fn router() -> Router {
-    Router::new().route("/", get(|| async { "Hello from {{ project_name }}!" }))
+    Router::new()
+        // rustrs:begin:routes
+        .route("/", get(|| async { "Hello from {{ project_name }}!" }))
+        // rustrs:end:routes
 }
 "#;
 
-const SIMPLE_MAIN_RS: &str = r#"mod handlers;
+const SIMPLE_MAIN_RS: &str = r#"// rustrs:begin:modules
+mod handlers;
 mod models;
 mod routes;
+// rustrs:end:modules
 
 #[tokio::main]
 async fn main() {
@@ -369,11 +376,16 @@ async fn main() {
 const SIMPLE_ROUTES_RS: &str = r#"use axum::{Router, routing::get};
 
 pub fn router() -> Router {
-    Router::new().route("/", get(|| async { "Hello from {{ project_name }}!" }))
+    Router::new()
+        // rustrs:begin:routes
+        .route("/", get(|| async { "Hello from {{ project_name }}!" }))
+        // rustrs:end:routes
 }
 "#;
 
-const STANDARD_MAIN_RS: &str = r#"mod modules;
+const STANDARD_MAIN_RS: &str = r#"// rustrs:begin:modules
+mod modules;
+// rustrs:end:modules
 
 #[tokio::main]
 async fn main() {
@@ -385,12 +397,17 @@ async fn main() {
 }
 "#;
 
-const STANDARD_MODULES_MOD: &str = r#"pub mod health;
+const STANDARD_MODULES_MOD: &str = r#"// rustrs:begin:modules
+pub mod health;
+// rustrs:end:modules
 
 use axum::{Router, routing::get};
 
 pub fn router() -> Router {
-    Router::new().route("/health", get(health::health))
+    Router::new()
+        // rustrs:begin:routes
+        .route("/health", get(health::health))
+        // rustrs:end:routes
 }
 "#;
 
@@ -402,7 +419,9 @@ const STANDARD_HEALTH_RS: &str = r#"pub async fn health() -> &'static str {
 const ENTERPRISE_MAIN_RS: &str = r#"mod application;
 mod infrastructure;
 mod interfaces;
+// rustrs:begin:modules
 mod modules;
+// rustrs:end:modules
 
 #[tokio::main]
 async fn main() {
@@ -414,7 +433,9 @@ async fn main() {
 }
 "#;
 
-const ENTERPRISE_MODULES_MOD: &str = "// Enterprise modules placeholder\n";
+const ENTERPRISE_MODULES_MOD: &str = r#"// rustrs:begin:modules
+// rustrs:end:modules
+"#;
 
 const ENTERPRISE_HEALTH_RS: &str = r#"pub async fn health() -> &'static str {
     "ok"
@@ -427,7 +448,10 @@ const ENTERPRISE_INTERFACES_MOD: &str = r#"pub mod http;
 const ENTERPRISE_HTTP_RS: &str = r#"use axum::{Router, routing::get};
 
 pub fn router() -> Router {
-    Router::new().route("/health", get(health))
+    Router::new()
+        // rustrs:begin:routes
+        .route("/health", get(health))
+        // rustrs:end:routes
 }
 
 pub fn health_router() -> Router {

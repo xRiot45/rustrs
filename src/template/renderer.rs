@@ -1,7 +1,7 @@
-use crate::template::context::TemplateContext;
 use crate::template::metadata::TemplateError;
+use serde::Serialize;
 
-pub fn render(source: &str, context: &TemplateContext) -> Result<String, TemplateError> {
+pub fn render<T: Serialize>(source: &str, context: &T) -> Result<String, TemplateError> {
     let tera_context =
         tera::Context::from_serialize(context).map_err(|error| TemplateError::Context {
             message: error.to_string(),

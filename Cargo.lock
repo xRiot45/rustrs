@@ -802,6 +802,7 @@ dependencies = [
  "assert_cmd",
  "clap",
  "dialoguer",
+ "heck",
  "predicates",
  "serde",
  "tempfile",

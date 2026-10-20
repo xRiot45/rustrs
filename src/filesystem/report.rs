@@ -9,9 +9,15 @@ pub fn preview_plan(plan: &GenerationPlan) -> OperationReport {
             ConflictStatus::Absent => OperationOutcome::Planned,
             ConflictStatus::ExistsFile
             | ConflictStatus::ExistsDirectory
-            | ConflictStatus::Invalid => OperationOutcome::Skipped {
-                reason: "target already exists".to_string(),
-            },
+            | ConflictStatus::Invalid => {
+                if operation.overwrite {
+                    OperationOutcome::Planned
+                } else {
+                    OperationOutcome::Skipped {
+                        reason: "target already exists".to_string(),
+                    }
+                }
+            }
         };
 
         results.push(OperationResult {
