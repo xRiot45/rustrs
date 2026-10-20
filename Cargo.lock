@@ -805,6 +805,7 @@ dependencies = [
  "heck",
  "predicates",
  "serde",
+ "serde_json",
  "tempfile",
  "tera",
  "thiserror 2.0.21",

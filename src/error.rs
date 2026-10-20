@@ -28,6 +28,9 @@ pub enum CliError {
 
     #[error("conflict: {0}")]
     Conflict(String),
+
+    #[error("diagnostic: {0}")]
+    Diagnostic(String),
 }
 
 impl CliError {
@@ -43,6 +46,7 @@ impl CliError {
             Self::Template(_) => 2,
             Self::Naming(_) => 2,
             Self::Conflict(_) => 3,
+            Self::Diagnostic(_) => 1,
         }
     }
 }
