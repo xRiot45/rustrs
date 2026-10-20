@@ -8,5 +8,6 @@ pub mod generation;
 pub mod generator;
 pub mod inspection;
 pub mod manifest;
+pub mod process;
 pub mod project;
 pub mod template;

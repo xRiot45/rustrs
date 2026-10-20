@@ -64,3 +64,28 @@ rustrs doctor
 ```
 
 All inspection commands are read-only. `--path` and `--json` are supported where applicable.
+
+## Database workflow
+
+```bash
+rustrs db create-migration <name>
+rustrs db migrate
+rustrs db rollback
+rustrs db status
+rustrs db seed
+# Note: seeding is currently unsupported because no real seeder mechanism exists
+```
+
+Database workflow requires a supported project (`Axum + Postgres + SQLx`) and, where needed, `sqlx-cli` and a reachable PostgreSQL database.
+
+## Development workflow
+
+```bash
+rustrs dev
+rustrs dev --watch
+rustrs dev up
+rustrs dev down
+rustrs dev logs
+```
+
+`rustrs dev` runs the generated application. `--watch` restarts it when relevant source files change. Managed lifecycle commands store minimal state under `.rustrs/dev/`.
