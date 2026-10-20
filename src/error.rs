@@ -1,6 +1,7 @@
 use crate::compatibility::CompatibilityError;
 use crate::manifest::ManifestError;
 use crate::project::root::ProjectRootError;
+use crate::template::TemplateError;
 use thiserror::Error;
 
 #[derive(Debug, Error)]
@@ -17,6 +18,12 @@ pub enum CliError {
 
     #[error(transparent)]
     Compatibility(#[from] CompatibilityError),
+
+    #[error(transparent)]
+    Template(#[from] TemplateError),
+
+    #[error("conflict: {0}")]
+    Conflict(String),
 }
 
 impl CliError {
@@ -29,6 +36,8 @@ impl CliError {
                 _ => 2,
             },
             Self::Compatibility(_) => 2,
+            Self::Template(_) => 2,
+            Self::Conflict(_) => 3,
         }
     }
 }

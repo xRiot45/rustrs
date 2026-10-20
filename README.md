@@ -4,15 +4,18 @@ Rust API scaffolding CLI.
 
 ## Status
 
-Phase 3 (Template and Filesystem Engine) is complete. The CLI currently provides:
+Phase 4 (Project Scaffolding) is complete. The CLI currently provides:
 
 - `--help`
 - `--version`
 - Global options: `--verbose` / `-v`, `--quiet` / `-q`, `--no-color`
+- `rustrs new <project-name>` with `--template`, `--framework`, `--database`, `--orm`, `--defaults`, `--non-interactive`, `--dry-run`
 
-Internally, typed manifest parsing, validation, schema versioning, compatibility resolution, capability rules, read-only manifest discovery, template resolution, rendering, generation planning, path safety, and filesystem writing are available.
+Supported templates: `minimal`, `simple`, `standard`, `enterprise` (all currently build Axum + Postgres + SQLx starter projects).
 
-Project scaffolding, templates, and code generators are not available yet.
+Internally, typed manifest parsing, validation, schema versioning, compatibility resolution, capability rules, read-only manifest discovery, template resolution, rendering, generation planning, path safety, filesystem writing, and project scaffolding are available.
+
+Code generators are not available yet.
 
 ## Prerequisites
 
@@ -31,6 +34,9 @@ cargo check
 ```bash
 rustrs --help
 rustrs --version
+rustrs new my-api --defaults
+rustrs new my-api --template standard --defaults
+rustrs new my-api --defaults --dry-run
 ```
 
 ## Verify
