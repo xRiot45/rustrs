@@ -2,6 +2,7 @@ use crate::generator::kind::GeneratorKind;
 use crate::manifest::model::{DataAccess, Database, Framework, TemplateId};
 use clap::Args;
 use clap::Subcommand;
+use clap_complete::Shell;
 use std::path::PathBuf;
 
 #[derive(Args, Debug)]
@@ -79,7 +80,7 @@ pub struct NewArgs {
 pub struct GenerateArgs {
     pub generator: GeneratorKind,
 
-    pub name: String,
+    pub name: Option<String>,
 
     #[arg(long)]
     pub singular: Option<String>,
@@ -163,6 +164,53 @@ pub struct StatusArgs {
 pub struct SeedArgs {
     #[arg(long)]
     pub path: Option<PathBuf>,
+}
+
+#[derive(Args, Debug)]
+pub struct CheckArgs {
+    #[arg(long)]
+    pub path: Option<PathBuf>,
+}
+
+#[derive(Args, Debug)]
+pub struct LintArgs {
+    #[arg(long)]
+    pub path: Option<PathBuf>,
+}
+
+#[derive(Args, Debug)]
+pub struct TestArgs {
+    #[arg(long)]
+    pub path: Option<PathBuf>,
+}
+
+#[derive(Args, Debug)]
+pub struct FormatArgs {
+    #[arg(long)]
+    pub path: Option<PathBuf>,
+
+    #[arg(long)]
+    pub write: bool,
+}
+
+#[derive(Args, Debug)]
+pub struct AuditArgs {
+    #[arg(long)]
+    pub path: Option<PathBuf>,
+}
+
+#[derive(Args, Debug)]
+pub struct DocsArgs {
+    #[arg(long)]
+    pub path: Option<PathBuf>,
+
+    #[arg(long)]
+    pub json: bool,
+}
+
+#[derive(Args, Debug)]
+pub struct CompletionArgs {
+    pub shell: Shell,
 }
 
 #[derive(Args, Debug)]

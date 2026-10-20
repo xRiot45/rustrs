@@ -25,6 +25,16 @@ pub enum GeneratorKind {
     Event,
     EventHandler,
     Resource,
+    #[value(name = "docker")]
+    Docker,
+    #[value(name = "compose")]
+    Compose,
+    #[value(name = "ci-github")]
+    CiGithub,
+    #[value(name = "ci-gitlab")]
+    CiGitlab,
+    #[value(name = "release")]
+    Release,
 }
 
 impl GeneratorKind {
@@ -46,6 +56,11 @@ impl GeneratorKind {
             "event" => Some(Self::Event),
             "event-handler" | "eventhandler" => Some(Self::EventHandler),
             "resource" => Some(Self::Resource),
+            "docker" => Some(Self::Docker),
+            "compose" => Some(Self::Compose),
+            "ci-github" | "ci_github" => Some(Self::CiGithub),
+            "ci-gitlab" | "ci_gitlab" => Some(Self::CiGitlab),
+            "release" => Some(Self::Release),
             _ => None,
         }
     }
@@ -68,6 +83,11 @@ impl GeneratorKind {
             Self::Event => "event",
             Self::EventHandler => "event-handler",
             Self::Resource => "resource",
+            Self::Docker => "docker",
+            Self::Compose => "compose",
+            Self::CiGithub => "ci-github",
+            Self::CiGitlab => "ci-gitlab",
+            Self::Release => "release",
         }
     }
 
@@ -89,6 +109,11 @@ impl GeneratorKind {
             Self::Event,
             Self::EventHandler,
             Self::Resource,
+            Self::Docker,
+            Self::Compose,
+            Self::CiGithub,
+            Self::CiGitlab,
+            Self::Release,
         ]
     }
 }

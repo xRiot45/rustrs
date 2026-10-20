@@ -89,3 +89,45 @@ rustrs dev logs
 ```
 
 `rustrs dev` runs the generated application. `--watch` restarts it when relevant source files change. Managed lifecycle commands store minimal state under `.rustrs/dev/`.
+
+## Quality commands
+
+```bash
+rustrs check
+rustrs lint
+rustrs test
+rustrs format
+rustrs format --write
+rustrs audit
+```
+
+`format` is check-only by default. `audit` requires `cargo-audit`.
+
+## Documentation helper
+
+```bash
+rustrs docs
+rustrs docs --json
+```
+
+The helper validates OpenAPI configuration and does not fabricate endpoints.
+
+## Shell completion
+
+```bash
+rustrs completion bash
+rustrs completion zsh
+rustrs completion fish
+```
+
+## Generated assets
+
+```bash
+rustrs generate docker
+rustrs generate compose
+rustrs generate ci-github
+rustrs generate ci-gitlab
+rustrs generate release
+```
+
+These commands generate files with the existing safe-write and conflict policy.

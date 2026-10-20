@@ -1,5 +1,9 @@
+pub mod assets;
+pub mod completion;
 pub mod db;
 pub mod dev;
+pub mod docs;
 pub mod generate;
 pub mod inspect;
 pub mod new_project;
+pub mod quality;

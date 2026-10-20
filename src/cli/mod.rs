@@ -2,9 +2,10 @@ pub mod commands;
 pub mod output;
 
 pub use commands::{
-    CreateMigrationArgs, DbArgs, DbCommands, DepsArgs, DevArgs, DevCommands, DevLifecycleArgs,
-    DoctorArgs, GenerateArgs, InfoArgs, MigrateArgs, ModulesArgs, NewArgs, RollbackArgs,
-    RoutesArgs, SeedArgs, StatusArgs,
+    AuditArgs, CheckArgs, CompletionArgs, CreateMigrationArgs, DbArgs, DbCommands, DepsArgs,
+    DevArgs, DevCommands, DevLifecycleArgs, DocsArgs, DoctorArgs, FormatArgs, GenerateArgs,
+    InfoArgs, LintArgs, MigrateArgs, ModulesArgs, NewArgs, RollbackArgs, RoutesArgs, SeedArgs,
+    StatusArgs, TestArgs,
 };
 pub use output::Output;
 
@@ -55,4 +56,25 @@ pub enum Commands {
 
     /// Development workflow commands
     Dev(DevArgs),
+
+    /// Run Cargo checks
+    Check(CheckArgs),
+
+    /// Run Cargo Clippy
+    Lint(LintArgs),
+
+    /// Run Cargo tests
+    Test(TestArgs),
+
+    /// Format Rust code
+    Format(FormatArgs),
+
+    /// Run dependency audit
+    Audit(AuditArgs),
+
+    /// Inspect OpenAPI documentation configuration
+    Docs(DocsArgs),
+
+    /// Generate shell completion
+    Completion(CompletionArgs),
 }

@@ -20,5 +20,12 @@ pub fn plan_for(kind: GeneratorKind, ctx: &GeneratorContext) -> Result<Generatio
         GeneratorKind::Job => crate::generator::job::plan(ctx),
         GeneratorKind::Event | GeneratorKind::EventHandler => crate::generator::event::plan(ctx),
         GeneratorKind::Resource => crate::generator::resource::plan(ctx),
+        GeneratorKind::Docker
+        | GeneratorKind::Compose
+        | GeneratorKind::CiGithub
+        | GeneratorKind::CiGitlab
+        | GeneratorKind::Release => Err(CliError::InvalidInput(
+            "asset generator is handled by the application layer".to_string(),
+        )),
     }
 }
