@@ -31,6 +31,15 @@ pub enum CliError {
 
     #[error("diagnostic: {0}")]
     Diagnostic(String),
+
+    #[error("missing tool: {0}")]
+    MissingTool(String),
+
+    #[error("external command failed: {0}")]
+    ExternalCommand(String),
+
+    #[error("operation cancelled")]
+    Cancelled,
 }
 
 impl CliError {
@@ -47,6 +56,9 @@ impl CliError {
             Self::Naming(_) => 2,
             Self::Conflict(_) => 3,
             Self::Diagnostic(_) => 1,
+            Self::MissingTool(_) => 4,
+            Self::ExternalCommand(_) => 5,
+            Self::Cancelled => 1,
         }
     }
 }

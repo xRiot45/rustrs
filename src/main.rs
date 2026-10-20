@@ -1,5 +1,7 @@
 use clap::Parser;
 use rustrs::application;
+use rustrs::application::db;
+use rustrs::application::dev;
 use rustrs::application::generate;
 use rustrs::application::inspect;
 use rustrs::cli::{Cli, Commands, Output};
@@ -25,6 +27,8 @@ fn run(cli: &Cli, output: &Output) -> Result<(), CliError> {
         Some(Commands::Routes(args)) => inspect::routes(args, output),
         Some(Commands::Deps(args)) => inspect::deps(args, output),
         Some(Commands::Doctor(args)) => inspect::doctor(args, output),
+        Some(Commands::Db(args)) => db::execute(args, output),
+        Some(Commands::Dev(args)) => dev::execute(args, output),
         None => Ok(()),
     }
 }

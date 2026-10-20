@@ -2,7 +2,9 @@ pub mod commands;
 pub mod output;
 
 pub use commands::{
-    DepsArgs, DoctorArgs, GenerateArgs, InfoArgs, ModulesArgs, NewArgs, RoutesArgs,
+    CreateMigrationArgs, DbArgs, DbCommands, DepsArgs, DevArgs, DevCommands, DevLifecycleArgs,
+    DoctorArgs, GenerateArgs, InfoArgs, MigrateArgs, ModulesArgs, NewArgs, RollbackArgs,
+    RoutesArgs, SeedArgs, StatusArgs,
 };
 pub use output::Output;
 
@@ -47,4 +49,10 @@ pub enum Commands {
 
     /// Run project diagnostics
     Doctor(DoctorArgs),
+
+    /// Database workflow commands
+    Db(DbArgs),
+
+    /// Development workflow commands
+    Dev(DevArgs),
 }
