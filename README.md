@@ -4,22 +4,24 @@ Rust API scaffolding CLI.
 
 ## Status
 
-Phase 4 (Project Scaffolding) is complete. The CLI currently provides:
+Phase 9 (Hardening & MVP Release) is in progress. The CLI currently provides project scaffolding, code generators, project inspection, diagnostics, database workflows, development workflows, quality commands, an OpenAPI configuration helper, shell completion, and delivery asset generation.
 
-- `--help`
-- `--version`
-- Global options: `--verbose` / `-v`, `--quiet` / `-q`, `--no-color`
-- `rustrs new <project-name>` with `--template`, `--framework`, `--database`, `--orm`, `--defaults`, `--non-interactive`, `--dry-run`
+## Supported MVP scope
 
-Supported templates: `minimal`, `simple`, `standard`, `enterprise` (all currently build Axum + Postgres + SQLx starter projects).
+- Templates: `minimal`, `simple`, `standard`, `enterprise`.
+- Framework/database/data access: `Axum + PostgreSQL + SQLx`.
+- Verified platform: Linux.
+- MSRV: Rust 1.85.0.
+- Edition: Rust 2024.
 
-Internally, typed manifest parsing, validation, schema versioning, compatibility resolution, capability rules, read-only manifest discovery, template resolution, rendering, generation planning, path safety, filesystem writing, and project scaffolding are available.
-
-Code generators are not available yet.
+See `docs/support-matrix.md` for the full support matrix.
 
 ## Prerequisites
 
-- Rust stable >= 1.85.0 (MSRV).
+- Rust stable >= 1.85.0.
+- For database workflows: `sqlx-cli` and a reachable PostgreSQL database.
+- For audit: `cargo-audit`.
+- For Docker assets validation: Docker and Docker Compose.
 
 ## Setup
 
@@ -31,29 +33,23 @@ cargo check
 
 ## Usage
 
+### Create a project
+
 ```bash
-rustrs --help
-rustrs --version
 rustrs new my-api --defaults
 rustrs new my-api --template standard --defaults
 rustrs new my-api --defaults --dry-run
 ```
 
-## Verify
+### Generate code
 
 ```bash
-cargo check
-cargo test
-cargo fmt --check
-cargo clippy --all-targets --all-features -- -D warnings
+rustrs generate resource products
+rustrs generate migration add_status
+rustrs g resource products --dry-run
 ```
 
-## Roadmap
-
-See `docs/roadmap/` for phase documents. Planned commands (not yet available)
-include `rustrs new`, `rustrs generate`, and related tooling.
-
-## Inspection and diagnostics
+### Inspect a project
 
 ```bash
 rustrs info
@@ -63,22 +59,20 @@ rustrs deps
 rustrs doctor
 ```
 
-All inspection commands are read-only. `--path` and `--json` are supported where applicable.
-
-## Database workflow
+### Database workflow
 
 ```bash
 rustrs db create-migration <name>
 rustrs db migrate
+rustrs db migrate --dry-run
 rustrs db rollback
 rustrs db status
 rustrs db seed
-# Note: seeding is currently unsupported because no real seeder mechanism exists
 ```
 
-Database workflow requires a supported project (`Axum + Postgres + SQLx`) and, where needed, `sqlx-cli` and a reachable PostgreSQL database.
+`db seed` is currently unsupported because no real seeder mechanism exists. `db rollback` requires down migration files; generated migrations are up-only by default.
 
-## Development workflow
+### Development workflow
 
 ```bash
 rustrs dev
@@ -88,9 +82,7 @@ rustrs dev down
 rustrs dev logs
 ```
 
-`rustrs dev` runs the generated application. `--watch` restarts it when relevant source files change. Managed lifecycle commands store minimal state under `.rustrs/dev/`.
-
-## Quality commands
+### Quality commands
 
 ```bash
 rustrs check
@@ -103,16 +95,16 @@ rustrs audit
 
 `format` is check-only by default. `audit` requires `cargo-audit`.
 
-## Documentation helper
+### Documentation helper
 
 ```bash
 rustrs docs
 rustrs docs --json
 ```
 
-The helper validates OpenAPI configuration and does not fabricate endpoints.
+The helper validates OpenAPI configuration. It does not fabricate endpoints or runtime documentation code.
 
-## Shell completion
+### Shell completion
 
 ```bash
 rustrs completion bash
@@ -120,7 +112,7 @@ rustrs completion zsh
 rustrs completion fish
 ```
 
-## Generated assets
+### Generated delivery assets
 
 ```bash
 rustrs generate docker
@@ -130,4 +122,28 @@ rustrs generate ci-gitlab
 rustrs generate release
 ```
 
-These commands generate files with the existing safe-write and conflict policy.
+These commands use the existing safe-write and conflict policy.
+
+## Verify
+
+```bash
+cargo fmt --check
+cargo check
+cargo test
+cargo clippy --all-targets --all-features -- -D warnings
+```
+
+## Known limitations
+
+- Only `Axum + PostgreSQL + SQLx` is supported.
+- macOS and Windows are not verified.
+- `rustrs db seed` is unsupported.
+- Generated migrations are up-only by default.
+- OpenAPI helper validates configuration only.
+- `rustrs audit` requires `cargo-audit`.
+- Docker build is not run automatically during asset generation.
+
+## Roadmap
+
+See `docs/roadmap/` for phase documents.
+EOF

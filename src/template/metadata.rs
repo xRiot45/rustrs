@@ -340,9 +340,7 @@ mod routes;
 #[tokio::main]
 async fn main() {
     let app = routes::router();
-    let listener = tokio::net::TcpListener::bind("0.0.0.0:3000")
-        .await
-        .unwrap();
+    let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap();
     axum::serve(listener, app).await.unwrap();
 }
 "#;
@@ -353,7 +351,7 @@ pub fn router() -> Router {
     Router::new()
         // rustrs:begin:routes
         .route("/", get(|| async { "Hello from {{ project_name }}!" }))
-        // rustrs:end:routes
+    // rustrs:end:routes
 }
 "#;
 
@@ -366,9 +364,7 @@ mod routes;
 #[tokio::main]
 async fn main() {
     let app = routes::router();
-    let listener = tokio::net::TcpListener::bind("0.0.0.0:3000")
-        .await
-        .unwrap();
+    let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap();
     axum::serve(listener, app).await.unwrap();
 }
 "#;
@@ -379,7 +375,7 @@ pub fn router() -> Router {
     Router::new()
         // rustrs:begin:routes
         .route("/", get(|| async { "Hello from {{ project_name }}!" }))
-        // rustrs:end:routes
+    // rustrs:end:routes
 }
 "#;
 
@@ -390,9 +386,7 @@ mod modules;
 #[tokio::main]
 async fn main() {
     let app = modules::router();
-    let listener = tokio::net::TcpListener::bind("0.0.0.0:3000")
-        .await
-        .unwrap();
+    let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap();
     axum::serve(listener, app).await.unwrap();
 }
 "#;
@@ -407,7 +401,7 @@ pub fn router() -> Router {
     Router::new()
         // rustrs:begin:routes
         .route("/health", get(health::health))
-        // rustrs:end:routes
+    // rustrs:end:routes
 }
 "#;
 
@@ -426,9 +420,7 @@ mod modules;
 #[tokio::main]
 async fn main() {
     let app = interfaces::http::router();
-    let listener = tokio::net::TcpListener::bind("0.0.0.0:3000")
-        .await
-        .unwrap();
+    let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap();
     axum::serve(listener, app).await.unwrap();
 }
 "#;
@@ -451,11 +443,7 @@ pub fn router() -> Router {
     Router::new()
         // rustrs:begin:routes
         .route("/health", get(health))
-        // rustrs:end:routes
-}
-
-pub fn health_router() -> Router {
-    Router::new().route("/health", get(health))
+    // rustrs:end:routes
 }
 
 async fn health() -> &'static str {
