@@ -60,10 +60,12 @@ pub struct Features {
     pub cicd: bool,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, clap::ValueEnum)]
+#[value(rename_all = "snake_case")]
 pub enum Capability {
     Auth,
     Rbac,
+    #[value(name = "openapi")]
     OpenApi,
     Redis,
     Email,
@@ -74,6 +76,63 @@ pub enum Capability {
     Observability,
     Docker,
     Cicd,
+}
+
+impl std::fmt::Display for Capability {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let name = match self {
+            Self::Auth => "auth",
+            Self::Rbac => "rbac",
+            Self::OpenApi => "openapi",
+            Self::Redis => "redis",
+            Self::Email => "email",
+            Self::Storage => "storage",
+            Self::AuditLog => "audit_log",
+            Self::RateLimit => "rate_limit",
+            Self::Idempotency => "idempotency",
+            Self::Observability => "observability",
+            Self::Docker => "docker",
+            Self::Cicd => "cicd",
+        };
+        write!(f, "{}", name)
+    }
+}
+
+impl Capability {
+    pub fn is_implemented(&self) -> bool {
+        matches!(
+            self,
+            Self::Docker
+                | Self::Cicd
+                | Self::Auth
+                | Self::Rbac
+                | Self::OpenApi
+                | Self::Redis
+                | Self::Email
+                | Self::Storage
+                | Self::AuditLog
+                | Self::RateLimit
+                | Self::Idempotency
+                | Self::Observability
+        )
+    }
+
+    pub fn effect_summary(&self) -> &'static str {
+        match self {
+            Self::Docker => "generates Dockerfile and .dockerignore",
+            Self::Cicd => "generates CI workflow files",
+            Self::Auth => "generates authentication module",
+            Self::Rbac => "generates permission-based RBAC support",
+            Self::OpenApi => "generates OpenAPI runtime and Scalar UI",
+            Self::Redis => "generates Redis client, cache, and rate limiting",
+            Self::Email => "generates email service",
+            Self::Storage => "generates storage service",
+            Self::AuditLog => "generates audit log service",
+            Self::RateLimit => "generates rate limiting middleware",
+            Self::Idempotency => "generates idempotency middleware",
+            Self::Observability => "generates observability setup",
+        }
+    }
 }
 
 impl Features {

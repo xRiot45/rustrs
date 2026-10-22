@@ -74,6 +74,9 @@ pub struct NewArgs {
 
     #[arg(long)]
     pub dry_run: bool,
+
+    #[arg(long)]
+    pub git: bool,
 }
 
 #[derive(Args, Debug)]
@@ -99,6 +102,9 @@ pub struct GenerateArgs {
 
     #[arg(long)]
     pub skip_docs: bool,
+
+    #[arg(long)]
+    pub no_interactive: bool,
 
     #[arg(long)]
     pub path: Option<PathBuf>,
@@ -151,6 +157,12 @@ pub struct RollbackArgs {
     pub target_version: Option<i64>,
 
     #[arg(long)]
+    pub dry_run: bool,
+
+    #[arg(long)]
+    pub yes: bool,
+
+    #[arg(long)]
     pub path: Option<PathBuf>,
 }
 
@@ -162,6 +174,12 @@ pub struct StatusArgs {
 
 #[derive(Args, Debug)]
 pub struct SeedArgs {
+    #[arg(long)]
+    pub dry_run: bool,
+
+    #[arg(long)]
+    pub yes: bool,
+
     #[arg(long)]
     pub path: Option<PathBuf>,
 }
@@ -241,4 +259,108 @@ pub enum DevCommands {
 pub struct DevLifecycleArgs {
     #[arg(long)]
     pub path: Option<PathBuf>,
+}
+
+#[derive(Args, Debug)]
+pub struct ConfigArgs {
+    #[command(subcommand)]
+    pub command: ConfigCommands,
+
+    #[arg(long)]
+    pub path: Option<PathBuf>,
+}
+
+#[derive(Subcommand, Debug)]
+pub enum ConfigCommands {
+    /// Show the project manifest
+    Show(ConfigShowArgs),
+
+    /// Get a manifest value
+    Get(ConfigGetArgs),
+
+    /// Set a manifest value
+    Set(ConfigSetArgs),
+}
+
+#[derive(Args, Debug)]
+pub struct ConfigShowArgs {
+    #[arg(long)]
+    pub json: bool,
+}
+
+#[derive(Args, Debug)]
+pub struct ConfigGetArgs {
+    pub key: String,
+
+    #[arg(long)]
+    pub json: bool,
+}
+
+#[derive(Args, Debug)]
+pub struct ConfigSetArgs {
+    pub key: String,
+
+    pub value: String,
+}
+
+#[derive(Args, Debug)]
+pub struct EnvArgs {
+    #[command(subcommand)]
+    pub command: EnvCommands,
+}
+
+#[derive(Subcommand, Debug)]
+pub enum EnvCommands {
+    /// Check required environment and tools
+    Check(EnvCheckArgs),
+}
+
+#[derive(Args, Debug)]
+pub struct EnvCheckArgs {
+    #[arg(long)]
+    pub path: Option<PathBuf>,
+
+    #[arg(long)]
+    pub json: bool,
+}
+
+#[derive(Args, Debug)]
+pub struct AddArgs {
+    pub capability: crate::manifest::model::Capability,
+
+    #[arg(long, value_enum, default_value = "github")]
+    pub provider: CiProvider,
+
+    #[arg(long)]
+    pub dry_run: bool,
+
+    #[arg(long)]
+    pub force: bool,
+
+    #[arg(long)]
+    pub path: Option<PathBuf>,
+}
+
+#[derive(Clone, Copy, Debug, clap::ValueEnum)]
+pub enum CiProvider {
+    Github,
+    Gitlab,
+}
+
+#[derive(Args, Debug)]
+pub struct UpdateArgs {
+    #[command(subcommand)]
+    pub command: UpdateCommands,
+}
+
+#[derive(Subcommand, Debug)]
+pub enum UpdateCommands {
+    /// Check for a newer CLI version
+    Check(UpdateCheckArgs),
+}
+
+#[derive(Args, Debug)]
+pub struct UpdateCheckArgs {
+    #[arg(long)]
+    pub json: bool,
 }

@@ -50,6 +50,24 @@ pub fn environment_findings() -> Vec<Finding> {
             });
         }
     }
+
+    for tool in ["sqlx", "cargo-audit", "docker"] {
+        let status = check_tool(tool);
+        if !status.available {
+            findings.push(Finding {
+                code: "OPTIONAL_TOOL_MISSING".to_string(),
+                severity: Severity::Info,
+                title: format!("{tool} is not available"),
+                detail: Some("optional tool".to_string()),
+                path: None,
+                suggestion: Some(format!(
+                    "Install {tool} and ensure it is on PATH if you use the related workflow."
+                )),
+                certain: true,
+            });
+        }
+    }
+
     findings
 }
 

@@ -4,6 +4,7 @@ use crate::inspection::environment::environment_findings;
 use crate::inspection::structure::check_required_files;
 use crate::inspection::{Finding, InspectionContext, Severity};
 use serde_json::json;
+use std::env;
 
 pub fn execute(ctx: &InspectionContext, output: &Output, json: bool) -> Result<(), CliError> {
     let mut findings: Vec<Finding> = ctx.findings.clone();
@@ -30,6 +31,23 @@ pub fn execute(ctx: &InspectionContext, output: &Output, json: bool) -> Result<(
 
     // Environment.
     findings.extend(environment_findings());
+
+    if let Ok(value) = env::var("DATABASE_URL") {
+        let valid = value.starts_with("postgres://") || value.starts_with("postgresql://");
+        if !valid {
+            findings.push(Finding {
+                code: "ENV_INVALID".to_string(),
+                severity: Severity::Warning,
+                title: "DATABASE_URL format is invalid".to_string(),
+                detail: Some("expected a postgres:// or postgresql:// URL".to_string()),
+                path: None,
+                suggestion: Some(
+                    "Update DATABASE_URL to a valid PostgreSQL connection URL.".to_string(),
+                ),
+                certain: true,
+            });
+        }
+    }
 
     let error_count = findings
         .iter()

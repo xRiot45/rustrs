@@ -11,11 +11,13 @@ use crate::manifest::model::{
     Architecture, DataAccess, Database, Features, Framework, ProjectManifest, TemplateId,
 };
 use crate::manifest::validation::validate_project_name;
+use crate::process::tools::require_tool;
 use crate::template::metadata::TemplateError;
 use dialoguer::{Confirm, Select};
 use std::fs;
 use std::io::IsTerminal;
 use std::path::PathBuf;
+use std::process::Command;
 
 pub struct ResolvedScaffold {
     pub project_name: String,
@@ -98,6 +100,24 @@ pub fn execute(args: &NewArgs, output: &Output) -> Result<(), CliError> {
 
     verify_structure(&resolved)?;
 
+    if args.git {
+        require_tool("git").map_err(|_| CliError::MissingTool("git".to_string()))?;
+        let status = Command::new("git")
+            .arg("init")
+            .current_dir(&resolved.target_root)
+            .status()
+            .map_err(|error| CliError::ExternalCommand(error.to_string()))?;
+        if !status.success() {
+            return Err(CliError::ExternalCommand(format!(
+                "git init failed with status {}",
+                status.code().unwrap_or(-1)
+            )));
+        }
+        if !output.quiet {
+            output.info("Initialized empty Git repository.");
+        }
+    }
+
     if !output.quiet {
         output.info("");
         output.info("Next steps:");
@@ -115,6 +135,20 @@ fn resolve_scaffold(args: &NewArgs) -> Result<ResolvedScaffold, CliError> {
 
     let (template, framework, database, data_access) = resolve_inputs(args, interactive)?;
 
+    let mut features = Features::default();
+    if matches!(template, TemplateId::Enterprise | TemplateId::Standard) {
+        features.email = true;
+        features.storage = true;
+        features.rate_limit = true;
+        features.idempotency = true;
+        features.observability = true;
+        if database == Database::Postgres && data_access == DataAccess::Sqlx {
+            features.auth = true;
+            features.rbac = true;
+            features.audit_log = true;
+        }
+    }
+
     let manifest = ProjectManifest {
         schema_version: 1,
         project_name: args.project_name.clone(),
@@ -123,7 +157,7 @@ fn resolve_scaffold(args: &NewArgs) -> Result<ResolvedScaffold, CliError> {
         architecture: Architecture::CleanModular,
         database,
         data_access,
-        features: Features::default(),
+        features,
     };
 
     manifest.validate()?;

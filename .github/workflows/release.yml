@@ -32,9 +32,14 @@ jobs:
       - shell: bash
         run: |
           mkdir -p dist
-          cp target/release/rustrs* dist/ 2>/dev/null || true
-          cd dist
-          sha256sum * > SHA256SUMS 2>/dev/null || true
+          if [ "${{ matrix.os }}" = "windows-latest" ]; then
+            cp target/release/rustrs.exe dist/rustrs.exe
+            cd dist && sha256sum rustrs.exe > SHA256SUMS
+          else
+            cp target/release/rustrs dist/rustrs
+            tar -czf rustrs-${{ matrix.os }}.tar.gz -C dist rustrs
+            sha256sum rustrs rustrs-${{ matrix.os }}.tar.gz > SHA256SUMS
+          fi
       - uses: actions/upload-artifact@v4
         with:
           name: rustrs-${{ matrix.os }}

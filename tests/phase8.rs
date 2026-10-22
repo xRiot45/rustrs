@@ -95,3 +95,31 @@ fn generate_docker_dry_run_does_not_create_files() {
         .success();
     assert!(!root.join("Dockerfile").is_file());
 }
+
+#[test]
+fn completion_all_supported_shells_work() {
+    for shell in ["bash", "zsh", "fish", "powershell", "elvish"] {
+        rustrs().args(["completion", shell]).assert().success();
+    }
+}
+
+#[test]
+fn generated_compose_is_structurally_valid() {
+    let (_dir, root) = scaffold_minimal();
+    rustrs()
+        .current_dir(&root)
+        .args(["generate", "compose"])
+        .assert()
+        .success();
+    let contents = fs::read_to_string(root.join("docker-compose.yml")).unwrap();
+    assert!(contents.contains("services:"));
+    assert!(contents.contains("app:"));
+}
+
+#[test]
+fn release_workflow_contains_quality_gates() {
+    let contents = fs::read_to_string(".github/workflows/release.yml").unwrap();
+    assert!(contents.contains("cargo check"));
+    assert!(contents.contains("cargo test"));
+    assert!(contents.contains("cargo clippy"));
+}

@@ -1,9 +1,13 @@
+pub mod add;
 pub mod assets;
 pub mod completion;
+pub mod config;
 pub mod db;
 pub mod dev;
 pub mod docs;
+pub mod env;
 pub mod generate;
 pub mod inspect;
 pub mod new_project;
 pub mod quality;
+pub mod update;

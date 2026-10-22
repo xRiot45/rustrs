@@ -13,6 +13,7 @@ use crate::process::runner::{ProcessRunner, SystemProcessRunner};
 use crate::process::spec::{ProcessError, ProcessSpec};
 use crate::process::tools::require_tool;
 use std::env;
+use std::io::IsTerminal;
 use std::path::PathBuf;
 
 pub fn execute(args: &DbArgs, output: &crate::cli::Output) -> Result<(), CliError> {
@@ -151,6 +152,34 @@ fn migrate(args: &MigrateArgs, output: &crate::cli::Output) -> Result<(), CliErr
 
 fn rollback(args: &RollbackArgs, output: &crate::cli::Output) -> Result<(), CliError> {
     let (root, _) = resolve_project(args.path.clone())?;
+
+    if args.dry_run {
+        let down_file = latest_down_migration(&root)?;
+        output.info(&format!("Would revert using {}", down_file.display()));
+        let contents = std::fs::read_to_string(&down_file)
+            .map_err(|error| CliError::InvalidInput(error.to_string()))?;
+        output.info(&contents);
+        return Ok(());
+    }
+
+    if !args.yes {
+        if std::io::stdin().is_terminal() {
+            let confirmed = dialoguer::Confirm::new()
+                .with_prompt("Roll back the latest migration? This may be destructive.")
+                .default(false)
+                .interact()
+                .map_err(|error| CliError::InvalidInput(error.to_string()))?;
+            if !confirmed {
+                output.info("Cancelled.");
+                return Ok(());
+            }
+        } else {
+            return Err(CliError::InvalidInput(
+                "rollback requires --yes in non-interactive mode".to_string(),
+            ));
+        }
+    }
+
     let mut command = vec!["migrate".to_string(), "revert".to_string()];
     if let Some(version) = args.target_version {
         command.push("--target-version".to_string());
@@ -164,10 +193,79 @@ fn status(args: &StatusArgs, output: &crate::cli::Output) -> Result<(), CliError
     run_sqlx(&root, vec!["migrate".into(), "info".into()], output)
 }
 
-fn seed(_args: &SeedArgs, _output: &crate::cli::Output) -> Result<(), CliError> {
-    Err(CliError::InvalidInput(
-        "database seeding is not supported because no real seeder mechanism exists".to_string(),
-    ))
+fn seed(args: &SeedArgs, output: &crate::cli::Output) -> Result<(), CliError> {
+    let (root, _) = resolve_project(args.path.clone())?;
+
+    if args.dry_run {
+        output.info("Would run: cargo run -- --seed");
+        let seeder = root.join("src").join("seeders").join("mod.rs");
+        if seeder.is_file() {
+            output.info(&format!("Seeder module: {}", seeder.display()));
+        } else {
+            output.warn("No seeder module found. Generate one before running seed.");
+        }
+        return Ok(());
+    }
+
+    if !args.yes {
+        if std::io::stdin().is_terminal() {
+            let confirmed = dialoguer::Confirm::new()
+                .with_prompt("Run database seeders? This may insert data.")
+                .default(false)
+                .interact()
+                .map_err(|error| CliError::InvalidInput(error.to_string()))?;
+            if !confirmed {
+                output.info("Cancelled.");
+                return Ok(());
+            }
+        } else {
+            return Err(CliError::InvalidInput(
+                "seed requires --yes in non-interactive mode".to_string(),
+            ));
+        }
+    }
+
+    require_tool("cargo").map_err(|_| CliError::MissingTool("cargo".to_string()))?;
+    let mut spec = crate::process::spec::ProcessSpec::new("cargo");
+    spec.args = vec!["run".to_string(), "--".to_string(), "--seed".to_string()];
+    spec.cwd = Some(root.clone());
+
+    let runner = crate::process::runner::SystemProcessRunner;
+    let result = runner.run(spec).map_err(|error| match error {
+        crate::process::spec::ProcessError::NotFound(name) => CliError::MissingTool(name),
+        other => CliError::ExternalCommand(other.to_string()),
+    })?;
+
+    if !result.stdout.trim().is_empty() {
+        output.info(&redact(&result.stdout));
+    }
+    if !result.stderr.trim().is_empty() {
+        output.warn(&redact(&result.stderr));
+    }
+    if result.code != 0 {
+        return Err(CliError::ExternalCommand(format!(
+            "seed exited with status {}",
+            result.code
+        )));
+    }
+    Ok(())
+}
+
+fn latest_down_migration(root: &std::path::Path) -> Result<std::path::PathBuf, CliError> {
+    let migrations = root.join("migrations");
+    let mut down_files: Vec<std::path::PathBuf> = std::fs::read_dir(&migrations)
+        .map_err(|error| CliError::InvalidInput(error.to_string()))?
+        .filter_map(|entry| entry.ok())
+        .map(|entry| entry.path())
+        .filter(|path| {
+            path.extension().and_then(|ext| ext.to_str()) == Some("sql")
+                && path.to_string_lossy().ends_with(".down.sql")
+        })
+        .collect();
+    down_files.sort();
+    down_files
+        .pop()
+        .ok_or_else(|| CliError::InvalidInput("no down migration found".to_string()))
 }
 
 fn redact(text: &str) -> String {

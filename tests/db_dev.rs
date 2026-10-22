@@ -40,14 +40,53 @@ fn db_create_migration_creates_file() {
 }
 
 #[test]
-fn db_seed_is_unsupported() {
+fn db_seed_dry_run_succeeds() {
     let (_dir, root) = scaffold("standard");
     rustrs()
         .current_dir(&root)
-        .args(["db", "seed"])
+        .args(["db", "seed", "--dry-run"])
         .assert()
-        .failure()
-        .code(2);
+        .success();
+}
+
+#[test]
+fn db_create_migration_creates_pair() {
+    let (_dir, root) = scaffold("standard");
+    rustrs()
+        .current_dir(&root)
+        .args(["db", "create-migration", "add_status"])
+        .assert()
+        .success();
+    let entries: Vec<_> = fs::read_dir(root.join("migrations")).unwrap().collect();
+    assert!(entries.iter().any(|e| {
+        e.as_ref()
+            .unwrap()
+            .path()
+            .to_string_lossy()
+            .ends_with(".up.sql")
+    }));
+    assert!(entries.iter().any(|e| {
+        e.as_ref()
+            .unwrap()
+            .path()
+            .to_string_lossy()
+            .ends_with(".down.sql")
+    }));
+}
+
+#[test]
+fn db_rollback_dry_run_succeeds() {
+    let (_dir, root) = scaffold("standard");
+    rustrs()
+        .current_dir(&root)
+        .args(["db", "create-migration", "add_status"])
+        .assert()
+        .success();
+    rustrs()
+        .current_dir(&root)
+        .args(["db", "rollback", "--dry-run"])
+        .assert()
+        .success();
 }
 
 #[test]

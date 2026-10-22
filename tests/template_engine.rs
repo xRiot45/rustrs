@@ -47,7 +47,9 @@ fn resolver_rejects_unavailable_template() {
 
 #[test]
 fn resolver_rejects_unsupported_combination() {
-    let input = VALID_MANIFEST.replace("framework = \"axum\"", "framework = \"rocket\"");
+    let input = VALID_MANIFEST
+        .replace("framework = \"axum\"", "framework = \"rocket\"")
+        .replace("database = \"postgres\"", "database = \"mysql\"");
     let manifest = parse_manifest(&input).unwrap();
     manifest.validate().unwrap();
 

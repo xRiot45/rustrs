@@ -9,6 +9,14 @@ pub fn evaluate(
     let supported = matches!(
         (framework, database, data_access),
         (Framework::Axum, Database::Postgres, DataAccess::Sqlx)
+            | (Framework::Axum, Database::Postgres, DataAccess::SeaOrm)
+            | (Framework::Axum, Database::Postgres, DataAccess::Diesel)
+            | (Framework::Axum, Database::Postgres, DataAccess::None)
+            | (Framework::Axum, Database::Mysql, DataAccess::Sqlx)
+            | (Framework::Axum, Database::Sqlite, DataAccess::Sqlx)
+            | (Framework::Axum, Database::None, DataAccess::None)
+            | (Framework::ActixWeb, Database::Postgres, DataAccess::Sqlx)
+            | (Framework::Rocket, Database::Postgres, DataAccess::Sqlx)
     );
 
     if supported {

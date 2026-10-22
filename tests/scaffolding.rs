@@ -111,7 +111,15 @@ fn new_unsupported_combo_fails() {
     let dir = TempDir::new().unwrap();
     rustrs()
         .current_dir(dir.path())
-        .args(["new", "demo2", "--defaults", "--framework", "rocket"])
+        .args([
+            "new",
+            "demo2",
+            "--defaults",
+            "--framework",
+            "rocket",
+            "--database",
+            "mysql",
+        ])
         .assert()
         .failure()
         .code(2);

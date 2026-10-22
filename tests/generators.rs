@@ -317,7 +317,7 @@ fn generate_migration_creates_file() {
 }
 
 #[test]
-fn generate_guard_fails_with_prerequisite_message() {
+fn generate_guard_succeeds() {
     let dir = TempDir::new().unwrap();
     rustrs()
         .current_dir(dir.path())
@@ -329,7 +329,7 @@ fn generate_guard_fails_with_prerequisite_message() {
         .current_dir(&root)
         .args(["generate", "guard", "products"])
         .assert()
-        .failure();
+        .success();
 }
 
 fn walkdir_files(root: &std::path::Path) -> Vec<String> {
@@ -346,4 +346,55 @@ fn walkdir_files(root: &std::path::Path) -> Vec<String> {
     }
     files.sort();
     files
+}
+
+#[test]
+fn generate_event_succeeds() {
+    let dir = TempDir::new().unwrap();
+    rustrs()
+        .current_dir(dir.path())
+        .args(["new", "demo", "--template", "standard", "--defaults"])
+        .assert()
+        .success();
+    let root = dir.path().join("demo");
+    rustrs()
+        .current_dir(&root)
+        .args(["generate", "event", "order"])
+        .assert()
+        .success();
+    assert!(root.join("src/order_event.rs").is_file());
+}
+
+#[test]
+fn generate_job_succeeds() {
+    let dir = TempDir::new().unwrap();
+    rustrs()
+        .current_dir(dir.path())
+        .args(["new", "demo", "--template", "standard", "--defaults"])
+        .assert()
+        .success();
+    let root = dir.path().join("demo");
+    rustrs()
+        .current_dir(&root)
+        .args(["generate", "job", "cleanup"])
+        .assert()
+        .success();
+    assert!(root.join("src/cleanup_job.rs").is_file());
+}
+
+#[test]
+fn generate_validator_succeeds() {
+    let dir = TempDir::new().unwrap();
+    rustrs()
+        .current_dir(dir.path())
+        .args(["new", "demo", "--template", "standard", "--defaults"])
+        .assert()
+        .success();
+    let root = dir.path().join("demo");
+    rustrs()
+        .current_dir(&root)
+        .args(["generate", "validator", "product"])
+        .assert()
+        .success();
+    assert!(root.join("src/product_validator.rs").is_file());
 }

@@ -9,36 +9,33 @@
 | Rust edition | 2024 |
 | MSRV | 1.85.0 |
 | Template | minimal, simple, standard, enterprise |
-| Framework | Axum |
-| Database | PostgreSQL |
-| Data access | SQLx |
+| Framework | Axum, Actix Web, Rocket |
+| Database | PostgreSQL, MySQL, SQLite, None |
+| Data access | SQLx (full); SeaORM and Diesel (minimal repository placeholders); None (no database) |
 | Architecture | clean_modular |
 
 ## Capability status
 
 | Capability | Status |
 | --- | --- |
-| auth | Declared in manifest; not fully generated in starter templates |
-| rbac | Declared; requires auth |
-| openapi | Manifest feature and `rustrs docs` validation only; runtime OpenAPI code is not generated |
-| redis | Manifest feature only; no generated integration |
-| email | Manifest feature only; no generated integration |
-| storage | Manifest feature only; no generated integration |
-| audit_log | Manifest feature only |
-| rate_limit | Manifest feature only |
-| idempotency | Manifest feature only |
-| observability | Manifest feature only |
-| docker | Asset generation available via `rustrs generate docker` |
-| cicd | Asset generation available via `rustrs generate ci-github` / `ci-gitlab` |
+| auth | Generated for `enterprise` and `standard` templates; `rustrs add auth` supported on those templates |
+| rbac | Permission-based RBAC generated with auth; `rustrs add rbac` supported on `enterprise` and `standard` |
+| openapi | Runtime scaffolding available via `rustrs add openapi` on `standard` and `enterprise` |
+| redis | Client, cache, and rate limiting available via `rustrs add redis` on `standard` and `enterprise` |
+| email | Generated for `enterprise` and `standard` templates; `rustrs add email` supported on those templates |
+| storage | Generated for `enterprise` and `standard` templates; `rustrs add storage` supported on those templates |
+| audit_log | Generated for `enterprise` and `standard` templates; `rustrs add audit_log` supported on those templates |
+| rate_limit | Generated for `enterprise` and `standard` templates; `rustrs add rate_limit` supported on those templates |
+| idempotency | Generated for `enterprise` and `standard` templates; `rustrs add idempotency` supported on those templates |
+| observability | Generated for `enterprise` and `standard` templates; `rustrs add observability` supported on those templates |
+| docker | Asset generation available via `rustrs generate docker` and `rustrs add docker` |
+| cicd | Asset generation available via `rustrs generate ci-github` / `ci-gitlab` and `rustrs add cicd` |
 
 ## Explicitly unsupported or deferred
 
-- Actix Web and Rocket.
-- MySQL, SQLite, and `None` database workflows.
-- SeaORM and Diesel.
-- `rustrs add <capability>`.
-- `rustrs db seed`.
-- Database rollback for up-only generated migrations.
+- SeaORM and Diesel repository generation.
+- `rustrs db seed` requires a reachable PostgreSQL database and runs the generated seeder module.
+- Database rollback uses paired down migration files; review generated down SQL before use.
 - macOS and Windows runtime verification.
 - Prebuilt binary distribution (source/Cargo install is the verified MVP route).
 EOF
