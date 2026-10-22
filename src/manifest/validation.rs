@@ -63,6 +63,8 @@ impl ProjectManifest {
         validate_schema_version(self.schema_version)?;
         validate_project_name(&self.project_name)?;
         self.features.validate()?;
+        crate::compatibility::capabilities::validate_project_capabilities(self)
+            .map_err(ManifestError::Capability)?;
         Ok(())
     }
 }

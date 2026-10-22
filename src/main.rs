@@ -30,6 +30,7 @@ fn run(cli: &Cli, output: &Output) -> Result<(), CliError> {
         Some(Commands::Routes(args)) => inspect::routes(args, output),
         Some(Commands::Deps(args)) => inspect::deps(args, output),
         Some(Commands::Doctor(args)) => inspect::doctor(args, output),
+        Some(Commands::Env(args)) => application::env::execute(args, output),
         Some(Commands::Db(args)) => db::execute(args, output),
         Some(Commands::Dev(args)) => dev::execute(args, output),
         Some(Commands::Check(args)) => quality::check(args, output),
@@ -38,6 +39,9 @@ fn run(cli: &Cli, output: &Output) -> Result<(), CliError> {
         Some(Commands::Format(args)) => quality::format(args, output),
         Some(Commands::Audit(args)) => quality::audit(args, output),
         Some(Commands::Docs(args)) => docs::execute(args, output),
+        Some(Commands::Add(args)) => application::add::execute(args, output),
+        Some(Commands::Config(args)) => application::config::execute(args, output),
+        Some(Commands::Update(args)) => application::update::execute(args, output),
         Some(Commands::Completion(args)) => completion::execute(args, output),
         None => Ok(()),
     }

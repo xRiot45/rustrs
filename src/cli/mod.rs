@@ -2,10 +2,12 @@ pub mod commands;
 pub mod output;
 
 pub use commands::{
-    AuditArgs, CheckArgs, CompletionArgs, CreateMigrationArgs, DbArgs, DbCommands, DepsArgs,
-    DevArgs, DevCommands, DevLifecycleArgs, DocsArgs, DoctorArgs, FormatArgs, GenerateArgs,
-    InfoArgs, LintArgs, MigrateArgs, ModulesArgs, NewArgs, RollbackArgs, RoutesArgs, SeedArgs,
-    StatusArgs, TestArgs,
+    AddArgs, AuditArgs, CheckArgs, CiProvider, CompletionArgs, ConfigArgs, ConfigCommands,
+    ConfigGetArgs, ConfigSetArgs, ConfigShowArgs, CreateMigrationArgs, DbArgs, DbCommands,
+    DepsArgs, DevArgs, DevCommands, DevLifecycleArgs, DocsArgs, DoctorArgs, EnvArgs, EnvCheckArgs,
+    EnvCommands, FormatArgs, GenerateArgs, InfoArgs, LintArgs, MigrateArgs, ModulesArgs, NewArgs,
+    RollbackArgs, RoutesArgs, SeedArgs, StatusArgs, TestArgs, UpdateArgs, UpdateCheckArgs,
+    UpdateCommands,
 };
 pub use output::Output;
 
@@ -51,6 +53,12 @@ pub enum Commands {
     /// Run project diagnostics
     Doctor(DoctorArgs),
 
+    /// Add a capability to an existing project
+    Add(AddArgs),
+
+    /// Environment checks
+    Env(EnvArgs),
+
     /// Database workflow commands
     Db(DbArgs),
 
@@ -75,6 +83,12 @@ pub enum Commands {
     /// Inspect OpenAPI documentation configuration
     Docs(DocsArgs),
 
+    /// Inspect or update project configuration
+    Config(ConfigArgs),
+
     /// Generate shell completion
     Completion(CompletionArgs),
+
+    /// Check for CLI updates
+    Update(UpdateArgs),
 }

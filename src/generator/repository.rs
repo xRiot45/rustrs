@@ -1,3 +1,31 @@
+const REPOSITORY_SEAORM_RS: &str = r#"// Minimal SeaORM repository placeholder for {{ singular_type }}
+pub trait {{ singular_type }}Repository {
+    fn find(&self, id: &str) -> Option<String>;
+}
+
+pub struct SeaOrm{{ singular_type }}Repository;
+
+impl {{ singular_type }}Repository for SeaOrm{{ singular_type }}Repository {
+    fn find(&self, _id: &str) -> Option<String> {
+        None
+    }
+}
+"#;
+
+const REPOSITORY_DIESEL_RS: &str = r#"// Minimal Diesel repository placeholder for {{ singular_type }}
+pub trait {{ singular_type }}Repository {
+    fn find(&self, id: &str) -> Option<String>;
+}
+
+pub struct Diesel{{ singular_type }}Repository;
+
+impl {{ singular_type }}Repository for Diesel{{ singular_type }}Repository {
+    fn find(&self, _id: &str) -> Option<String> {
+        None
+    }
+}
+"#;
+
 use crate::error::CliError;
 use crate::filesystem::paths::validate_relative_path;
 use crate::generation::plan::{GenerationPlan, PlannedOperation};
@@ -13,7 +41,6 @@ pub fn plan(ctx: &GeneratorContext) -> Result<GenerationPlan, CliError> {
             "repository generator requires a database/data-access configuration".to_string(),
         ));
     }
-
     let module = &ctx.names.module;
     let gen_ctx = ctx.gen_context();
 
@@ -33,7 +60,17 @@ pub fn plan(ctx: &GeneratorContext) -> Result<GenerationPlan, CliError> {
 
     let relative = validate_relative_path(PathBuf::from(&file_path).as_path())
         .map_err(|e| CliError::InvalidInput(e.to_string()))?;
-    let contents = render(REPOSITORY_RS, &gen_ctx)
+    let repository_template = match ctx.manifest.data_access {
+        crate::manifest::model::DataAccess::Sqlx => REPOSITORY_RS,
+        crate::manifest::model::DataAccess::SeaOrm => REPOSITORY_SEAORM_RS,
+        crate::manifest::model::DataAccess::Diesel => REPOSITORY_DIESEL_RS,
+        crate::manifest::model::DataAccess::None => {
+            return Err(CliError::InvalidInput(
+                "repository generator requires a data-access configuration".to_string(),
+            ));
+        }
+    };
+    let contents = render(repository_template, &gen_ctx)
         .map_err(CliError::Template)?
         .into_bytes();
 

@@ -81,3 +81,69 @@ fn basic_invocation_does_not_create_files() {
     let after: Vec<_> = fs::read_dir(dir.path()).unwrap().collect();
     assert_eq!(before.len(), after.len());
 }
+
+#[test]
+fn env_check_help_works() {
+    rustrs().args(["env", "check", "--help"]).assert().success();
+}
+
+#[test]
+fn env_check_runs() {
+    rustrs().args(["env", "check"]).assert().success();
+}
+
+#[test]
+fn generate_no_interactive_help_works() {
+    rustrs()
+        .args(["generate", "--help"])
+        .assert()
+        .success()
+        .stdout(predicate::str::contains("no-interactive"));
+}
+
+#[test]
+fn generate_no_interactive_requires_name() {
+    let dir = TempDir::new().unwrap();
+    rustrs()
+        .current_dir(dir.path())
+        .args(["new", "demo", "--defaults"])
+        .assert()
+        .success();
+    let root = dir.path().join("demo");
+    rustrs()
+        .current_dir(&root)
+        .args(["generate", "entity", "--no-interactive"])
+        .assert()
+        .failure()
+        .code(2);
+}
+
+#[test]
+fn new_git_flag_creates_git_directory() {
+    let dir = TempDir::new().unwrap();
+    rustrs()
+        .current_dir(dir.path())
+        .args(["new", "demo", "--defaults", "--git"])
+        .assert()
+        .success();
+    assert!(dir.path().join("demo/.git").is_dir());
+}
+
+#[test]
+fn new_without_git_flag_does_not_create_git_directory() {
+    let dir = TempDir::new().unwrap();
+    rustrs()
+        .current_dir(dir.path())
+        .args(["new", "demo", "--defaults"])
+        .assert()
+        .success();
+    assert!(!dir.path().join("demo/.git").exists());
+}
+
+#[test]
+fn update_check_help_works() {
+    rustrs()
+        .args(["update", "check", "--help"])
+        .assert()
+        .success();
+}

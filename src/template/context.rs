@@ -2,6 +2,22 @@ use crate::manifest::model::ProjectManifest;
 use serde::Serialize;
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct TemplateFeatures {
+    pub auth: bool,
+    pub rbac: bool,
+    pub openapi: bool,
+    pub redis: bool,
+    pub email: bool,
+    pub storage: bool,
+    pub audit_log: bool,
+    pub rate_limit: bool,
+    pub idempotency: bool,
+    pub observability: bool,
+    pub docker: bool,
+    pub cicd: bool,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
 pub struct TemplateContext {
     pub project_name: String,
     pub template: String,
@@ -9,6 +25,7 @@ pub struct TemplateContext {
     pub architecture: String,
     pub database: String,
     pub data_access: String,
+    pub features: TemplateFeatures,
 }
 
 impl TemplateContext {
@@ -20,6 +37,20 @@ impl TemplateContext {
             architecture: architecture_name(manifest.architecture),
             database: database_name(manifest.database),
             data_access: data_access_name(manifest.data_access),
+            features: TemplateFeatures {
+                auth: manifest.features.auth,
+                rbac: manifest.features.rbac,
+                openapi: manifest.features.openapi,
+                redis: manifest.features.redis,
+                email: manifest.features.email,
+                storage: manifest.features.storage,
+                audit_log: manifest.features.audit_log,
+                rate_limit: manifest.features.rate_limit,
+                idempotency: manifest.features.idempotency,
+                observability: manifest.features.observability,
+                docker: manifest.features.docker,
+                cicd: manifest.features.cicd,
+            },
         }
     }
 }

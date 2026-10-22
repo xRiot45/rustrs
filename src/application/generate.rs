@@ -34,6 +34,11 @@ pub fn execute(args: &GenerateArgs, output: &Output) -> Result<(), CliError> {
                     | GeneratorKind::Release
             ) {
                 String::new()
+            } else if args.no_interactive {
+                return Err(CliError::InvalidInput(
+                    "missing generator name; --no-interactive requires all required inputs"
+                        .to_string(),
+                ));
             } else {
                 return Err(CliError::InvalidInput("missing generator name".to_string()));
             }

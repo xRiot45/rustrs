@@ -13,15 +13,11 @@ pub enum GeneratorKind {
     Controller,
     Handler,
     Middleware,
-    #[value(skip)]
     Guard,
-    #[value(skip)]
     Validator,
     Test,
     Migration,
-    #[value(skip)]
     Job,
-    #[value(skip)]
     Event,
     EventHandler,
     Resource,
